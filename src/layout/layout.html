@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Xploitron Report</title>
+  <link rel="stylesheet" href="layout.css" />
+</head>
+<body>
+  <h1>Xploitron Scan Report</h1>
+  <p><strong>Timestamp:</strong> {{timestamp}}</p>
+  <p><strong>LLM Response:</strong></p>
+  <pre>{{llmResponse}}</pre>
+
+  <h2>Scan Results</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Target</th>
+        <th>Payload</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{attackRows}}
+    </tbody>
+  </table>
+
+  <h3>Fields and Pages Tested</h3>
+  <ul>
+    {{selectorList}}
+  </ul>
+</body>
+</html>
