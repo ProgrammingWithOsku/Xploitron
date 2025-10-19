@@ -1,126 +1,101 @@
-## 🛡️ Xploitron
+# Xploitron
 
-**Xploitron** is a modular, AI-powered security scanning tool. It uses a local LLaMA language model to generate attack payloads (e.g. XSS), executes them via Playwright, and produces clean HTML reports with screenshots and LLM suggestions.
+<p align="center">
+  <img src="./icon.jpg" alt="Xploitron Icon" width="220"/>
+</p>
 
----
+<p align="center">
+  <strong>A modular, AI-powered security scanner for modern web applications.</strong>
+</p>
 
-## 🚀 Features
+<p align="center">
+    <img src="https://img.shields.io/badge/License-ISC-blue.svg" alt="License">
+    <img src="https://img.shields.io/badge/TypeScript-5.x-blue.svg" alt="TypeScript">
+    <img src="https://img.shields.io/badge/Powered%20by-Playwright-brightgreen.svg" alt="Playwright">
+</p>
 
-- ✅ AI-generated payloads via local LLaMA
-- ✅ Automated browser-based scanning using Playwright
-- ✅ HTML report with results, screenshots, and LLM suggestions
-- ✅ Modular structure for adding new attack types (e.g. SQLi, CSRF)
-- ✅ Type-safe and scalable codebase (TypeScript)
-- ✅ Prompt-driven payload generation per module
-- ✅ Easy configuration via centralized `config.ts`
+-----
 
----
+## 🚀 About Xploitron
 
-## 📁 Project Structure
+Xploitron is a penetration testing tool designed to automate the discovery of web application vulnerabilities. It leverages **Playwright** for robust, headless browser automation and a local **Large Language Model (LLM)** for intelligent, context-aware payload generation. Its modular architecture allows for easy expansion with new attack types.
 
-```
-Xploitron/
-│
-├── src/
-│   ├── index.ts                # Entry point
-│
-│   ├── core/                   # Core logic
-│   │   ├── engine.ts           # Scan coordinator + report generator
-│   │   ├── llama.ts            # LLaMA integration
-│   │   ├── config.ts           # Centralized settings
-│   │   └── types.ts            # Shared interfaces
-│
-│   ├── modules/                # Attack modules
-│   │   ├── xss.ts              # XSS scanning logic
-│   │   └── sqli.ts             # (optional) SQLi module
-│
-│   ├── payloads/               # Prompt definitions per attack type
-│   │   └── xss.prompt.ts       # LLM prompt for XSS
-│
-│   ├── layout/                 # HTML report template
-│   │   ├── layout.html
-│   │   └── layout.css
-│
-├── results/                    # Output folder
-│   ├── report.html
-│   ├── xss_screenshot.png
-│   └── report.json
-│
-├── package.json
-├── tsconfig.json
-└── README.md
-```
+-----
 
----
+## ✨ Key Features
 
-## 🧠 Requirements
+  * **Dynamic Input Discovery:** Automatically finds and tests all input fields, text areas, and search bars on a page.
+  * **Recursive Crawling:** Intelligently spiders the target site to discover all in-scope pages, respecting the initial domain and port.
+  * **Modular Attack Engine:** Built with a clean separation of concerns, allowing for new modules (e.g., SQLi, LFI) to be easily added.
+  * **AI-Powered Payloads:** Connects to a local LLM (via Ollama) to generate creative and effective attack payloads.
+  * **Robust Automation:** Intelligently handles common obstacles like cookie consent popups and detects CAPTCHAs to avoid getting stuck.
+  * **Secure, Single-File Reporting:** Generates a clean, self-contained HTML report with detailed results of every attack attempt.
 
-- Node.js ≥ 18
-- [Ollama](https://ollama.com) installed locally
-- LLaMA model pulled via:
+-----
 
-```bash
-ollama pull llama3
-```
+## 🛠️ Getting Started
 
----
+Follow these instructions to get a local copy up and running for development and testing.
 
-## 🧪 How It Works
+### Prerequisites
 
-1. `index.ts` loads a prompt from `payloads/xss.prompt.ts`
-2. Sends the prompt to LLaMA via `queryLocalLLM()`
-3. Parses the response into payloads
-4. Executes each payload using Playwright
-5. Generates a report with results, screenshots, and LLM suggestions
+  * **Node.js** (v18 or later)
+  * **npm**
+  * A local **Ollama** instance running with your chosen model (e.g., `ollama run llama3`).
 
----
+### Installation
 
-## ▶️ Run the Scanner
+1.  **Clone the repository:**
 
-```bash
-npm install
-npm run start
+    ```sh
+    git clone <your-repository-url>
+    cd xploitron
+    ```
+
+2.  **Install dependencies:**
+
+    ```sh
+    npm install
+    ```
+
+3.  **Configure the scanner:**
+    Open `src/core/config.ts` and set your desired `TARGET_URL`, `SCAN_MODE`, and `MODEL_NAME`.
+
+    ```typescript
+    // src/core/config.ts
+    export const TARGET_URL = 'http://localhost:4000/';
+    export const MODEL_NAME = 'llama3';
+    export const SCAN_MODE: 'recursive' | 'single' = 'recursive';
+    ```
+
+### Running the Scan
+
+Execute the main script to start the scan:
+
+```sh
+npm start
 ```
 
-> Make sure Ollama is running locally before starting:
-```bash
-ollama run llama3
-```
+After the scan is complete, the report will be saved in the `/results` directory.
 
----
+-----
 
-## 🧩 Add New Attack Modules
+## 🔧 Configuration
 
-To add a new attack type (e.g. SQLi):
+All settings are centralized in `src/core/config.ts`:
 
-1. Create `src/modules/sqli.ts` and export `runSQLiScan()`
-2. Create `src/payloads/sqli.prompt.ts` with a custom prompt
-3. Update `index.ts` to use the new module and prompt
-4. Extend `engine.ts` to handle the new type
+  * **`TARGET_URL`**: The entry point for the scan.
+  * **`MODEL_NAME`**: The name of the model to use with your local Ollama instance.
+  * **`SCAN_MODE`**:
+      * `'single'`: Scans only the `TARGET_URL`.
+      * `'recursive'`: Crawls and scans the entire website starting from the `TARGET_URL`.
 
----
+-----
 
-## 📄 Report Example
+## 📜 License
 
-- Target: `http://localhost:4000/`
-- Payloads: AI-generated via LLaMA
-- Status: ✅ or ⚠️
-- Screenshot: `results/xss_screenshot.png`
-- LLM Suggestions: shown in report
+This project is licensed under the ISC License. See the `LICENSE` file for details.
 
----
+## ⚠️ Disclaimer
 
-## 📌 Notes
-
-- All payloads are sanitized before rendering in HTML
-- Prompts are modular and customizable per attack type
-- Reports are overwritten unless archived manually
-- You can extend the engine to support multiple targets or batch scanning
-
----
-
-## 📬 Author
-
-Made with ❤️ by **Osamah (Osku)**  
-Location: Finland  
-Date: 19 October 2025
+This tool is intended for educational purposes and for testing applications you have explicit permission to scan. Unauthorized scanning of web applications is illegal. The author is not responsible for any misuse or damage caused by this tool.

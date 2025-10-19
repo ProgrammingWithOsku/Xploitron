@@ -1,38 +1,43 @@
-import { readFileSync, writeFileSync } from 'fs';
-import { runXSSScan } from '../modules/xss';
-import { ScanTask, ScanResult } from './types';
+import { readFileSync, writeFileSync, mkdirSync } from 'fs';
+import { escapeHTML } from '../utils/sanitizer';
+import { ReportData, AttackResult } from './types';
 
-export async function runScan(task: ScanTask) {
+export function generateSecureReport(reportData: ReportData): void {
   const template = readFileSync('./src/layout/layout.html', 'utf-8');
-  const timestamp = new Date().toLocaleString();
+  const cssStyles = readFileSync('./src/layout/layout.css', 'utf-8');
+  const timestamp = new Date().toLocaleString('en-GB', { hour12: false });
 
-  const attackRows: string[] = [];
+  const attackRows = reportData.results.map((result: AttackResult) => {
+    let statusClass = '';
+    switch (result.status) {
+      case 'Vulnerable ⚠️': statusClass = 'detected'; break;
+      case 'Secure ✅': statusClass = 'clean'; break;
+      case 'Error ❌': statusClass = 'failed'; break;
+    }
+    const safeUrl = escapeHTML(result.url);
+    const safeSelector = escapeHTML(result.selector);
+    const safePayload = escapeHTML(result.payload);
 
-  for (const payload of task.payloads) {
-    const result: ScanResult = await runXSSScan(task.target, payload);
-
-    const safePayload = payload.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    const statusText = result.xssDetected ? 'XSS Detected ⚠️' : 'No XSS Found ✅';
-    const statusClass = result.xssDetected ? 'detected' : 'clean';
-
-    attackRows.push(`
+    return `
       <tr>
-        <td>${task.type.toUpperCase()}</td>
-        <td>${task.target}</td>
+        <td>${escapeHTML(result.attackType)}</td>
+        <td>${safeUrl}</td>
+        <td class="selector">${safeSelector}</td>
         <td class="payload">${safePayload}</td>
-        <td class="status ${statusClass}">${statusText}</td>
+        <td class="status ${statusClass}">${result.status}</td>
       </tr>
-    `);
-  }
-
-  const selectorList = task.payloads.map(p => `<li>${p}</li>`).join('\n');
+    `;
+  }).join('\n');
 
   const filled = template
-    .replace('{{attackRows}}', attackRows.join('\n'))
-    .replace('{{llmResponse}}', (task.llmResponse || '').replace(/</g, '&lt;').replace(/>/g, '&gt;'))
+    .replace('{{styles}}', cssStyles)
+    .replace('{{attackRows}}', attackRows)
     .replace('{{timestamp}}', timestamp)
-    .replace('{{selectorList}}', selectorList);
+    .replace('{{targetUrl}}', escapeHTML(reportData.target))
+    .replace('{{llmResponse}}', escapeHTML(reportData.llmResponse || ''));
 
-  writeFileSync('./results/report.html', filled);
-  console.log('📄 Report saved to results/report.html');
+  const outputDir = './results';
+  mkdirSync(outputDir, { recursive: true });
+  writeFileSync(`${outputDir}/report.html`, filled);
+  console.log(`📄 Secure, detailed report saved to ${outputDir}/report.html`);
 }

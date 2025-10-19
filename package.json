@@ -7,7 +7,7 @@
     "start": "ts-node src/index.ts",
     "build": "tsc",
     "test": "echo \"No tests yet\" && exit 0",
-    "report": "node results/report.html"
+    "report": "open-cli results/report.html"
   },
   "keywords": [
     "security",
@@ -15,32 +15,22 @@
     "automation",
     "xss",
     "sqli",
-    "csrf",
     "playwright",
     "typescript",
     "llm",
-    "llama",
-    "ollama",
-    "ai",
-    "pentest",
-    "vulnerability",
-    "payload",
-    "reporting",
-    "headless",
-    "browser",
-    "modular",
-    "cli"
+    "pentest"
   ],
   "author": "Osamah Amer",
   "license": "ISC",
-  "devDependencies": {
-    "@types/node": "^20.10.5",
-    "@types/node-fetch": "^2.6.13",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.3.3",
-    "playwright": "^1.56.1"
-  },
   "dependencies": {
-    "node-fetch": "^3.3.2"
+    "node-fetch": "^2.7.0",
+    "playwright": "^1.44.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.12",
+    "@types/node-fetch": "^2.6.9",
+    "open-cli": "^8.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
   }
 }

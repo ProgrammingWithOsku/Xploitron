@@ -3,32 +3,31 @@
 <head>
   <meta charset="UTF-8" />
   <title>Xploitron Report</title>
-  <link rel="stylesheet" href="layout.css" />
+  <style>{{styles}}</style>
 </head>
 <body>
-  <h1>Xploitron Scan Report</h1>
-  <p><strong>Timestamp:</strong> {{timestamp}}</p>
-  <p><strong>LLM Response:</strong></p>
-  <pre>{{llmResponse}}</pre>
+  <div class="container">
+    <h1>Scan Report</h1>
+    <p><strong>Target:</strong> <span class="payload">{{targetUrl}}</span></p>
+    <p><strong>Timestamp:</strong> {{timestamp}}</p>
+    <p><strong>LLM-Generated Payloads:</strong></p>
+    <pre>{{llmResponse}}</pre>
 
-  <h2>Scan Results</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Target</th>
-        <th>Payload</th>
-        <th>Status</th>
-      </tr>
-    </thead>
-    <tbody>
-      {{attackRows}}
-    </tbody>
-  </table>
-
-  <h3>Fields and Pages Tested</h3>
-  <ul>
-    {{selectorList}}
-  </ul>
+    <h2>Attack Results</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>URL / Endpoint</th>
+          <th>Selector Tested</th>
+          <th>Payload</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{attackRows}}
+      </tbody>
+    </table>
+  </div>
 </body>
 </html>
